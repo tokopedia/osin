@@ -1,8 +1,6 @@
 package osin
 
-import (
-	"time"
-)
+import "time"
 
 // Server is an OAuth2 implementation
 type Server struct {
