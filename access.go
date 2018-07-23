@@ -288,7 +288,7 @@ func (s *Server) handleRefreshTokenRequest(w *Response, r *http.Request) *Access
 	var err error
 	ret.AccessData, err = w.Storage.LoadRefresh(ret.Code)
 	if err != nil {
-		w.SetError(E_INVALID_GRANT, "")
+		w.SetError(err.Error(), "")
 		w.InternalError = err
 		return nil
 	}
