@@ -20,6 +20,7 @@ const (
 	CLIENT_CREDENTIALS AccessRequestType = "client_credentials"
 	ASSERTION          AccessRequestType = "assertion"
 	IMPLICIT           AccessRequestType = "__implicit"
+	EXTENSION          AccessRequestType = "extension"
 )
 
 // AccessRequest is a request for access tokens
@@ -38,6 +39,7 @@ type AccessRequest struct {
 	Password        string
 	AssertionType   string
 	Assertion       string
+	Extension       interface{}
 
 	// Set if request is authorized
 	Authorized bool
@@ -143,6 +145,8 @@ func (s *Server) HandleAccessRequest(w *Response, r *http.Request) *AccessReques
 			return s.handleClientCredentialsRequest(w, r)
 		case ASSERTION:
 			return s.handleAssertionRequest(w, r)
+		case EXTENSION:
+			return s.handleExtensionRequest(w, r)
 		}
 	}
 
@@ -441,6 +445,38 @@ func (s *Server) handleAssertionRequest(w *Response, r *http.Request) *AccessReq
 	// "assertion_type" and "assertion" is required
 	if ret.AssertionType == "" || ret.Assertion == "" {
 		s.setErrorAndLog(w, E_INVALID_GRANT, nil, "handle_assertion_request=%s", "assertion and assertion_type required")
+		return nil
+	}
+
+	// must have a valid client
+	if ret.Client = s.getClient(ctx, auth, w.Storage, w); ret.Client == nil {
+		return nil
+	}
+
+	// set redirect uri
+	ret.RedirectUri = FirstUri(ret.Client.GetRedirectUri(), s.Config.RedirectUriSeparator)
+
+	return ret
+}
+
+func (s *Server) handleExtensionRequest(w *Response, r *http.Request) *AccessRequest {
+	// get client authentication
+	ctx := r.Context()
+	auth := s.getClientAuth(w, r, s.Config.AllowClientSecretInParams)
+	if auth == nil {
+		return nil
+	}
+
+	// generate access token
+	if s.Config.ExtensionHandler == nil {
+		return nil
+	}
+
+	ret := s.Config.ExtensionHandler(s, w, r)
+
+	// "assertion_type" and "assertion" is required
+	if ret.Extension == nil {
+		w.SetError(E_INVALID_GRANT, "")
 		return nil
 	}
 

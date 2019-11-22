@@ -250,6 +250,64 @@ func TestAccessClientCredentials(t *testing.T) {
 	}
 }
 
+func TestAccessExtension(t *testing.T) {
+	sconfig := NewServerConfig()
+	sconfig.AllowedAccessTypes = AllowedAccessType{EXTENSION}
+	sconfig.ExtensionHandler = func(s *Server, w *Response, r *http.Request) *AccessRequest {
+		return &AccessRequest{
+			Type:            EXTENSION,
+			Scope:           r.Form.Get("scope"),
+			Extension:       map[string]string{"ext": r.Form.Get("ext")},
+			GenerateRefresh: true,
+			Expiration:      s.Config.AccessExpiration,
+			HttpRequest:     r,
+		}
+	}
+	server := NewServer(sconfig, NewTestingStorage())
+	server.AccessTokenGen = &TestingAccessTokenGen{}
+	resp := server.NewResponse()
+
+	req, err := http.NewRequest("POST", "http://localhost:14000/appauth", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("1234", "aabbccdd")
+
+	req.Form = make(url.Values)
+	req.Form.Set("grant_type", string(EXTENSION))
+	req.Form.Set("ext", "ext")
+	req.Form.Set("state", "a")
+	req.PostForm = make(url.Values)
+
+	if ar := server.HandleAccessRequest(resp, req); ar != nil {
+		ex := ar.Extension.(map[string]string)
+		ar.Authorized = ex["ext"] == "ext"
+		server.FinishAccessRequest(resp, req, ar)
+	}
+
+	//fmt.Printf("%+v", resp)
+
+	if resp.IsError && resp.InternalError != nil {
+		t.Fatalf("Error in response: %s", resp.InternalError)
+	}
+
+	if resp.IsError {
+		t.Fatalf("Should not be an error")
+	}
+
+	if resp.Type != DATA {
+		t.Fatalf("Response should be data")
+	}
+
+	if d := resp.Output["access_token"]; d != "1" {
+		t.Fatalf("Unexpected access token: %s", d)
+	}
+
+	if d := resp.Output["refresh_token"]; d != "r1" {
+		t.Fatalf("Unexpected refresh token: %s", d)
+	}
+}
+
 func TestExtraScopes(t *testing.T) {
 	if extraScopes("", "") == true {
 		t.Fatalf("extraScopes returned true with empty scopes")

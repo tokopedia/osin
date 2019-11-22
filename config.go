@@ -1,5 +1,7 @@
 package osin
 
+import "net/http"
+
 // AllowedAuthorizeType is a collection of allowed auth request types
 type AllowedAuthorizeType []AuthorizeRequestType
 
@@ -64,6 +66,8 @@ type ServerConfig struct {
 	// RetainTokenAfter Refresh allows the server to retain the access and
 	// refresh token for re-use - default false
 	RetainTokenAfterRefresh bool
+	// Handler for extension grant method.
+	ExtensionHandler func(s *Server, w *Response, r *http.Request) *AccessRequest
 }
 
 // NewServerConfig returns a new ServerConfig with default configuration
