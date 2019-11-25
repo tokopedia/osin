@@ -11,6 +11,12 @@ type Client interface {
 	// Base client uri
 	GetRedirectUri() string
 
+	// get client app name
+	GetAppName() string
+
+	// get image url
+	GetImageUrl() string
+
 	// Data to be passed to storage. Not used by the library.
 	GetUserData() interface{}
 }
@@ -28,6 +34,8 @@ type DefaultClient struct {
 	Id          string
 	Secret      string
 	RedirectUri string
+	AppName     string
+	ImageUrl    string
 	UserData    interface{}
 }
 
@@ -43,6 +51,14 @@ func (d *DefaultClient) GetRedirectUri() string {
 	return d.RedirectUri
 }
 
+func (d *DefaultClient) GetAppName() string {
+	return d.AppName
+}
+
+func (d *DefaultClient) GetImageUrl() string {
+	return d.ImageUrl
+}
+
 func (d *DefaultClient) GetUserData() interface{} {
 	return d.UserData
 }
@@ -56,5 +72,7 @@ func (d *DefaultClient) CopyFrom(client Client) {
 	d.Id = client.GetId()
 	d.Secret = client.GetSecret()
 	d.RedirectUri = client.GetRedirectUri()
+	d.AppName = client.GetAppName()
+	d.ImageUrl = client.GetImageUrl()
 	d.UserData = client.GetUserData()
 }

@@ -336,11 +336,15 @@ type clientWithoutMatcher struct {
 	Id          string
 	Secret      string
 	RedirectUri string
+	AppName     string
+	ImageUrl    string
 }
 
 func (c *clientWithoutMatcher) GetId() string            { return c.Id }
 func (c *clientWithoutMatcher) GetSecret() string        { return c.Secret }
 func (c *clientWithoutMatcher) GetRedirectUri() string   { return c.RedirectUri }
+func (c *clientWithoutMatcher) GetAppName() string       { return c.AppName }
+func (c *clientWithoutMatcher) GetImageUrl() string      { return c.ImageUrl }
 func (c *clientWithoutMatcher) GetUserData() interface{} { return nil }
 
 func TestGetClientWithoutMatcher(t *testing.T) {
@@ -348,6 +352,8 @@ func TestGetClientWithoutMatcher(t *testing.T) {
 		Id:          "myclient",
 		Secret:      "myclientsecret",
 		RedirectUri: "http://www.example.com",
+		AppName:     "client",
+		ImageUrl:    "https://www.google.com/tes.png",
 	}
 	storage := &TestingStorage{clients: map[string]Client{myclient.Id: myclient}}
 	sconfig := NewServerConfig()
@@ -414,11 +420,15 @@ type clientWithMatcher struct {
 	Id          string
 	Secret      string
 	RedirectUri string
+	AppName     string
+	ImageUrl    string
 }
 
 func (c *clientWithMatcher) GetId() string            { return c.Id }
 func (c *clientWithMatcher) GetSecret() string        { panic("called GetSecret"); return "" }
 func (c *clientWithMatcher) GetRedirectUri() string   { return c.RedirectUri }
+func (c *clientWithMatcher) GetAppName() string       { return c.AppName }
+func (c *clientWithMatcher) GetImageUrl() string      { return c.ImageUrl }
 func (c *clientWithMatcher) GetUserData() interface{} { return nil }
 func (c *clientWithMatcher) ClientSecretMatches(secret string) bool {
 	return secret == c.Secret
@@ -429,6 +439,8 @@ func TestGetClientSecretMatcher(t *testing.T) {
 		Id:          "myclient",
 		Secret:      "myclientsecret",
 		RedirectUri: "http://www.example.com",
+		AppName:     "client",
+		ImageUrl:    "https://www.google.com/tes.png",
 	}
 	storage := &TestingStorage{clients: map[string]Client{myclient.Id: myclient}}
 	sconfig := NewServerConfig()
