@@ -224,7 +224,7 @@ func (s *Server) FinishAuthorizeRequest(w *Response, r *http.Request, ar *Author
 				Client:          ar.Client,
 				RedirectUri:     ar.RedirectUri,
 				Scope:           ar.Scope,
-				GenerateRefresh: false, // per the RFC, should NOT generate a refresh token in this case
+				GenerateRefresh: true,
 				Authorized:      true,
 				Expiration:      ar.Expiration,
 				UserData:        ar.UserData,
