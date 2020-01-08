@@ -12,5 +12,5 @@ type LoggerDefault struct {
 }
 
 func (l LoggerDefault) Printf(format string, v ...interface{}) {
-	log.Printf(format, v)
+	log.Printf(format, v...)
 }
