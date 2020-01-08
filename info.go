@@ -49,7 +49,7 @@ func (s *Server) HandleInfoRequest(w *Response, r *http.Request) *InfoRequest {
 		return nil
 	}
 	if ret.AccessData.Client.GetRedirectUri() == "" {
-		s.setErrorAndLog(w, E_UNAUTHORIZED_CLIENT, nil, "handle_info_request=%s, code=%s", "access data client redirect uri is empty", ret.Code)
+		s.setErrorAndLog(w, E_UNAUTHORIZED_CLIENT, nil, "handle_info_request=%s, code=%s client=%s", "access data client redirect uri is empty", ret.Code, ret.AccessData.Client.GetId())
 		return nil
 	}
 	if ret.AccessData.IsExpiredAt(s.Now()) {
