@@ -17,6 +17,9 @@ type Client interface {
 	// get image url
 	GetImageUrl() string
 
+	// External Client
+	IsExternal() bool
+
 	// Data to be passed to storage. Not used by the library.
 	GetUserData() interface{}
 }
@@ -36,6 +39,7 @@ type DefaultClient struct {
 	RedirectUri string
 	AppName     string
 	ImageUrl    string
+	External    bool
 	UserData    interface{}
 }
 
@@ -57,6 +61,10 @@ func (d *DefaultClient) GetAppName() string {
 
 func (d *DefaultClient) GetImageUrl() string {
 	return d.ImageUrl
+}
+
+func (d *DefaultClient) IsExternal() bool {
+	return d.External
 }
 
 func (d *DefaultClient) GetUserData() interface{} {
