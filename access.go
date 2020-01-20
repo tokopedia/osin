@@ -413,8 +413,12 @@ func (s *Server) handleClientCredentialsRequest(w *Response, r *http.Request) *A
 	}
 
 	// must have a valid client
-	if ret.Client = s.getClient(ctx, auth, w.Storage, w); ret.Client == nil {
+	client := s.getClient(ctx, auth, w.Storage, w)
+	if client == nil {
 		return nil
+	}
+	if client.IsExternal() && client.GetAppName() == "OPENAPI" {
+		ret.Scope = "OPENAPI"
 	}
 
 	// set redirect uri
