@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"errors"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -527,6 +528,15 @@ func (s *Server) FinishAccessRequest(w *Response, r *http.Request, ar *AccessReq
 			}
 		} else {
 			ret = ar.ForceAccessData
+		}
+
+		// TODO : Delete immediately after 1003 recovered :
+		if ar.Client != nil {
+			if redirectUri == "" && ar.Client.GetId() == "1003" {
+				log.Println("[SUSREQ-1003] : ", r.URL, r.Header, r.FormValue("grant_type"))
+			}
+		} else {
+			log.Println("[SUSREQ-1003] ar.Client NIL !")
 		}
 
 		// save access token
