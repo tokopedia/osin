@@ -91,6 +91,9 @@ type AccessData struct {
 
 	// Data to be passed to storage. Not used by the library.
 	UserData interface{}
+
+	// ID Identifier for user token
+	UserID int64
 }
 
 // IsExpired returns true if access expired
