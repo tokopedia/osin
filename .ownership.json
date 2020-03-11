@@ -1,6 +1,8 @@
 {
-    "name": "osin",
+    "repository_name": "osin",
     "description": "Osin is library for Authentication & Authorization Process",
-    "owner": "rizqi.synergy",
-    "slack_channel": "#sonic-underground"
+    "security_owner": "uwaaa",
+    "owner":"uwaaa",
+    "slack_channel": "sonic-underground",
+    "last_update": "12/03/2020"
 }
