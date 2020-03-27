@@ -37,23 +37,23 @@ func (s *Server) HandleInfoRequest(w *Response, r *http.Request) *InfoRequest {
 	// load access data
 	ret.AccessData, err = w.Storage.LoadAccess(ctx, ret.Code)
 	if err != nil {
-		s.setErrorAndLog(w, E_INVALID_REQUEST, err, "handle_info_request=%s", "failed to load access data")
+		s.setErrorAndLog(w, E_INVALID_REQUEST, err, "handle_info_request=%s, code=%s", "failed to load access data", ret.Code)
 		return nil
 	}
 	if ret.AccessData == nil {
-		s.setErrorAndLog(w, E_INVALID_REQUEST, nil, "handle_info_request=%s", "access data is nil")
+		s.setErrorAndLog(w, E_INVALID_REQUEST, nil, "handle_info_request=%s, code=%s", "access data is nil", ret.Code)
 		return nil
 	}
 	if ret.AccessData.Client == nil {
-		s.setErrorAndLog(w, E_UNAUTHORIZED_CLIENT, nil, "handle_info_request=%s", "access data client is nil")
+		s.setErrorAndLog(w, E_UNAUTHORIZED_CLIENT, nil, "handle_info_request=%s, code=%s", "access data client is nil", ret.Code)
 		return nil
 	}
 	if ret.AccessData.Client.GetRedirectUri() == "" {
-		s.setErrorAndLog(w, E_UNAUTHORIZED_CLIENT, nil, "handle_info_request=%s", "access data client redirect uri is empty")
+		s.setErrorAndLog(w, E_UNAUTHORIZED_CLIENT, nil, "handle_info_request=%s, code=%s client=%s", "access data client redirect uri is empty", ret.Code, ret.AccessData.Client.GetId())
 		return nil
 	}
 	if ret.AccessData.IsExpiredAt(s.Now()) {
-		s.setErrorAndLog(w, E_INVALID_GRANT, nil, "handle_info_request=%s", "access data is expired")
+		s.setErrorAndLog(w, E_INVALID_GRANT, nil, "handle_info_request=%s, code=%s", "access data is expired", ret.Code)
 		return nil
 	}
 

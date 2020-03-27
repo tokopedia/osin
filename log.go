@@ -1,5 +1,7 @@
 package osin
 
+import "log"
+
 // Logger creates a formatted log event.
 // NOTE: Log is meant for internal use only and may contain sensitive info.
 type Logger interface {
@@ -10,4 +12,5 @@ type LoggerDefault struct {
 }
 
 func (l LoggerDefault) Printf(format string, v ...interface{}) {
+	log.Printf(format, v...)
 }
