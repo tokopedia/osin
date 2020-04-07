@@ -423,7 +423,7 @@ func (s *Server) handleClientCredentialsRequest(w *Response, r *http.Request) *A
 	if client.IsExternal() && client.GetAppName() == "OPENAPI" {
 		ret.Scope = "OPENAPI"
 	}
-
+	ret.Client = client
 	// set redirect uri
 	ret.RedirectUri = FirstUri(ret.Client.GetRedirectUri(), s.Config.RedirectUriSeparator)
 
