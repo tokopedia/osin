@@ -56,7 +56,7 @@ func ValidateUri(baseUri string, redirectUri string) error {
 
 	// for whitelist url with regex
 	if strings.Contains(baseUri, `\`) {
-		isValid := regexp.MustCompile(baseUri).MatchString(redirectUri)
+		isValid := regexp.MustCompile(`^` + baseUri).MatchString(redirectUri)
 		if isValid {
 			return nil
 		} else {
