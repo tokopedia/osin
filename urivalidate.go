@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"regexp"
 	"strings"
 )
 
@@ -51,6 +52,17 @@ func ValidateUriList(baseUriList string, redirectUri string, separator string) e
 func ValidateUri(baseUri string, redirectUri string) error {
 	if baseUri == "" || redirectUri == "" {
 		return errors.New("urls cannot be blank.")
+	}
+
+	// for whitelist url with regex
+	if strings.Contains(baseUri, `\`) {
+		isValid := regexp.MustCompile(baseUri).MatchString(redirectUri)
+		if isValid {
+			return nil
+		} else {
+			return newUriValidationError("url mismatch with regex", baseUri, redirectUri)
+		}
+
 	}
 
 	// parse base url
