@@ -605,9 +605,9 @@ func (s Server) getClient(ctx context.Context, auth *BasicAuth, storage Storage,
 // setErrorAndLog sets the response error and internal error (if non-nil) and logs them along with the provided debug format string and arguments.
 func (s Server) setErrorAndLog(w *Response, responseError string, internalError error, debugFormat string, debugArgs ...interface{}) {
 	format := "error=%v, internal_error=%#v " + debugFormat
-
 	w.InternalError = internalError
 	w.SetError(responseError, "")
-
-	s.Logger.Printf(format, append([]interface{}{responseError, internalError}, debugArgs...)...)
+	if internalError != ErrorIgnore {
+		s.Logger.Printf(format, append([]interface{}{responseError, internalError}, debugArgs...)...)
+	}
 }

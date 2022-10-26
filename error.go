@@ -1,5 +1,7 @@
 package osin
 
+import "errors"
+
 type DefaultErrorId string
 
 const (
@@ -13,10 +15,12 @@ const (
 	E_UNSUPPORTED_GRANT_TYPE           = "unsupported_grant_type"
 	E_INVALID_GRANT                    = "invalid_grant"
 	E_INVALID_CLIENT                   = "invalid_client"
+	E_IGNORE_ERROR                     = "ignore_error"
 )
 
 var (
-	deferror *DefaultErrors = NewDefaultErrors()
+	deferror    *DefaultErrors = NewDefaultErrors()
+	ErrorIgnore                = errors.New(E_IGNORE_ERROR)
 )
 
 // Default errors and messages
@@ -41,6 +45,7 @@ func NewDefaultErrors() *DefaultErrors {
 	r.errormap[E_UNSUPPORTED_GRANT_TYPE] = "The authorization grant type is not supported by the authorization server."
 	r.errormap[E_INVALID_GRANT] = "The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client."
 	r.errormap[E_INVALID_CLIENT] = "Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method)."
+	r.errormap[E_IGNORE_ERROR] = ""
 	return r
 }
 
