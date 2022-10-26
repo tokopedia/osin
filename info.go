@@ -37,6 +37,7 @@ func (s *Server) HandleInfoRequest(w *Response, r *http.Request) *InfoRequest {
 	// load access data
 	ret.AccessData, err = w.Storage.LoadAccess(ctx, ret.Code)
 	if err != nil {
+		s.setErrorAndLog(w, E_INVALID_REQUEST, err, "handle_info_request=%s, code=%s", "failed to load access data", ret.Code)
 		return nil
 	}
 	if ret.AccessData == nil {
