@@ -607,7 +607,9 @@ func (s Server) setErrorAndLog(w *Response, responseError string, internalError 
 	format := "error=%v, internal_error=%#v " + debugFormat
 	w.InternalError = internalError
 	w.SetError(responseError, "")
-	if internalError.Error() != ErrorIgnore.Error() {
-		s.Logger.Printf(format, append([]interface{}{responseError, internalError}, debugArgs...)...)
+	if internalError != nil {
+		if internalError.Error() != ErrorIgnore.Error() {
+			s.Logger.Printf(format, append([]interface{}{responseError, internalError}, debugArgs...)...)
+		}
 	}
 }
