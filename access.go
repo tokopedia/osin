@@ -254,7 +254,7 @@ func (s *Server) handleAuthorizationCodeRequest(w *Response, r *http.Request) *A
 		}
 		if codeVerifier != ret.AuthorizeData.CodeChallenge {
 			s.setErrorAndLog(w, E_INVALID_GRANT, errors.New("code_verifier failed comparison with code_challenge"),
-				"auth_code_request=%s", "pkce code verifier does not match challenge")
+				"auth_code_request=%s request:%s saved_challenge:%s", "pkce code verifier does not match challenge", ret.CodeVerifier, ret.AuthorizeData.CodeChallenge)
 			return nil
 		}
 	}
