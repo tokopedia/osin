@@ -252,7 +252,10 @@ func (s *Server) handleAuthorizationCodeRequest(w *Response, r *http.Request) *A
 				"auth_code_request=%s", "pkce transform algorithm not supported (rfc7636)")
 			return nil
 		}
-		if codeVerifier != ret.AuthorizeData.CodeChallenge {
+
+		// This is hacky way to fix android webview sending hashed codeVerifier value.
+		// We compare stored codeChallenge to both plain and hashed codeVerifier.
+		if codeVerifier != ret.AuthorizeData.CodeChallenge && ret.CodeVerifier != ret.AuthorizeData.CodeChallenge {
 			s.setErrorAndLog(w, E_INVALID_GRANT, errors.New("code_verifier failed comparison with code_challenge"),
 				"auth_code_request=%s request:%s saved_challenge:%s", "pkce code verifier does not match challenge", ret.CodeVerifier, ret.AuthorizeData.CodeChallenge)
 			return nil
